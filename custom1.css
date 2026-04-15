@@ -1,0 +1,119 @@
+/* =============================================
+   custom1.css — Matthew Mabey Professional Site
+   ============================================= */
+
+:root {
+  --navy:    #0d1b2a;
+  --navy-mid:#1a2e45;
+  --navy-lt: #243b55;
+  --gold:    #c9a84c;
+  --gold-lt: #e2c97e;
+  --charcoal:#2c3e50;
+  --off-white:#f4f1eb;
+  --text-muted:#8a9ab0;
+}
+
+/* ---- Base ---- */
+body {
+  font-family: 'DM Sans', sans-serif;
+  background-color: var(--navy);
+  color: var(--off-white);
+}
+
+/* ---- Navbar ---- */
+#mainNav {
+  background: rgba(13,27,42,0.6);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid transparent;
+  transition: all 0.35s ease;
+}
+#mainNav.scrolled {
+  background: rgba(13,27,42,0.98);
+  border-bottom: 1px solid rgba(201,168,76,0.25);
+}
+.navbar-brand { font-family: 'Playfair Display', serif; font-size:1.4rem; color: var(--gold) !important; letter-spacing:2px; }
+.nav-link { color: var(--off-white) !important; font-size:0.88rem; letter-spacing:0.08em; text-transform:uppercase; transition:color 0.2s; }
+.nav-link:hover { color: var(--gold) !important; }
+
+/* ---- Hero ---- */
+.hero-section {
+  min-height: 100vh;
+  background: linear-gradient(160deg, var(--navy) 0%, var(--navy-mid) 60%, #0f2740 100%);
+  position: relative;
+  overflow: hidden;
+}
+.hero-section::before {
+  content:'';
+  position:absolute; inset:0;
+  background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(201,168,76,0.07) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hero-eyebrow { font-size:0.78rem; letter-spacing:0.25em; text-transform:uppercase; color: var(--gold); margin-bottom:0.75rem; }
+.hero-title { font-family:'Playfair Display', serif; font-size:clamp(3rem,8vw,6rem); font-weight:700; line-height:1.05; letter-spacing:-0.01em; margin-bottom:0.5rem; }
+.hero-subtitle { font-size:1.1rem; font-weight:300; letter-spacing:0.18em; text-transform:uppercase; color: var(--text-muted); }
+.hero-divider { width:48px; height:2px; background: var(--gold); margin:1.5rem auto; }
+.hero-desc { font-size:1.05rem; color: rgba(244,241,235,0.8); max-width:480px; margin:0 auto; line-height:1.7; }
+
+/* ---- Buttons ---- */
+.btn-gold { background: var(--gold); color: var(--navy); font-weight:500; border:none; letter-spacing:0.04em; transition: all 0.25s; }
+.btn-gold:hover { background: var(--gold-lt); color: var(--navy); transform:translateY(-1px); box-shadow: 0 6px 20px rgba(201,168,76,0.3); }
+
+/* ---- Sections ---- */
+.section-dark { background: var(--navy); }
+.section-mid  { background: var(--navy-mid); }
+
+.section-title { font-family:'Playfair Display', serif; font-size:2rem; font-weight:700; color: var(--off-white); }
+.body-text { color: rgba(244,241,235,0.75); line-height:1.8; font-size:1rem; }
+
+/* ---- Pillar Cards ---- */
+.pillar-card {
+  background: var(--navy-mid);
+  border: 1px solid rgba(201,168,76,0.15);
+  border-radius: 12px;
+  transition: transform 0.3s, border-color 0.3s;
+}
+.pillar-card:hover { transform:translateY(-6px); border-color: rgba(201,168,76,0.45); }
+.pillar-icon { font-size:2rem; color: var(--gold); }
+.pillar-heading { font-family:'Playfair Display', serif; color: var(--off-white); font-size:1.1rem; }
+.pillar-text { color: var(--text-muted); font-size:0.93rem; line-height:1.7; }
+
+/* ---- Stats ---- */
+.stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; }
+.stat-box {
+  background: var(--navy);
+  border: 1px solid rgba(201,168,76,0.15);
+  border-radius:10px;
+  padding:1.75rem 1.5rem;
+  display:flex; flex-direction:column; align-items:center;
+  transition: border-color 0.3s;
+}
+.stat-box:hover { border-color: var(--gold); }
+.stat-num { font-family:'Playfair Display', serif; font-size:2.5rem; color: var(--gold); line-height:1; }
+.stat-label { font-size:0.78rem; letter-spacing:0.12em; text-transform:uppercase; color: var(--text-muted); margin-top:0.4rem; }
+
+/* ---- Resume page ---- */
+.resume-section { padding:6rem 0 4rem; min-height:100vh; background: var(--navy); }
+.resume-block { margin-bottom:2.5rem; }
+.resume-category { font-size:0.72rem; letter-spacing:0.22em; text-transform:uppercase; color: var(--gold); margin-bottom:1rem; border-bottom:1px solid rgba(201,168,76,0.2); padding-bottom:0.5rem; }
+.resume-entry-title { font-family:'Playfair Display', serif; font-size:1.05rem; color: var(--off-white); margin-bottom:0.1rem; }
+.resume-entry-sub { font-size:0.85rem; color: var(--text-muted); margin-bottom:0.5rem; }
+.resume-entry-sub span { color: var(--gold); }
+.resume-bullets { padding-left:1.2rem; }
+.resume-bullets li { font-size:0.9rem; color: rgba(244,241,235,0.75); line-height:1.7; margin-bottom:0.25rem; }
+.skill-tag { display:inline-block; background: rgba(201,168,76,0.12); border:1px solid rgba(201,168,76,0.25); color: var(--gold-lt); font-size:0.78rem; border-radius:4px; padding:0.2rem 0.65rem; margin:0.2rem; }
+
+/* ---- About page ---- */
+.about-section { padding:6rem 0 4rem; min-height:100vh; background: var(--navy); }
+.about-card {
+  background: var(--navy-mid);
+  border:1px solid rgba(201,168,76,0.15);
+  border-radius:12px;
+  padding:2rem;
+}
+.interest-icon { font-size:1.5rem; color: var(--gold); }
+
+/* ---- Footer ---- */
+.footer-dark { background: var(--navy); border-top:1px solid rgba(201,168,76,0.15); }
+.social-link { color: var(--text-muted); font-size:1.2rem; text-decoration:none; transition:color 0.2s; }
+.social-link:hover { color: var(--gold); }
+.footer-text { font-size:0.8rem; color: var(--text-muted); margin:0; }

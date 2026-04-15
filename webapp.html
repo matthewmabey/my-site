@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Putting Green — Matthew Mabey</title>
+  <style>
+    :root {
+      --green-dark: #1a3d2b;
+      --green-mid:  #2d6a4f;
+      --green-play: #3a7d44;
+      --green-lt:   #52b788;
+      --sand:       #e9c46a;
+      --cream:      #fefae0;
+      --brown:      #6b4226;
+      --sky:        #a8dadc;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: var(--green-dark);
+      color: var(--cream);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+    }
+
+    #topbar {
+      width: 100%;
+      background: rgba(0,0,0,0.35);
+      border-bottom: 2px solid var(--sand);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    #topbar a {
+      color: var(--sand);
+      text-decoration: none;
+      font-family: Arial, sans-serif;
+      font-size: 0.82rem;
+      letter-spacing: 0.05em;
+    }
+
+    #topbar h1 {
+      font-size: 1.3rem;
+      color: var(--cream);
+      letter-spacing: 0.06em;
+    }
+
+    #scoreboard {
+      display: flex;
+      gap: 2rem;
+      margin: 1rem 0 0.5rem;
+      font-family: Arial, sans-serif;
+    }
+
+    .score-box {
+      text-align: center;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(233,196,106,0.3);
+      border-radius: 8px;
+      padding: 0.5rem 1.25rem;
+    }
+    .score-label { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--green-lt); }
+    .score-val   { font-size: 1.6rem; font-weight: bold; color: var(--sand); line-height: 1.1; }
+
+    #game-area {
+      position: relative;
+      width: min(540px, 96vw);
+      height: min(540px, 96vw);
+      margin: 0.75rem auto;
+      user-select: none;
+    }
+
+    canvas {
+      border-radius: 12px;
+      display: block;
+      width: 100%;
+      height: 100%;
+      cursor: crosshair;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5), inset 0 0 0 3px rgba(233,196,106,0.25);
+    }
+
+    #aim-indicator {
+      position: absolute;
+      pointer-events: none;
+      border: 2px dashed rgba(233,196,106,0.6);
+      border-radius: 50%;
+      width: 24px; height: 24px;
+      transform: translate(-50%,-50%);
+      display: none;
+    }
+
+    #power-wrap {
+      width: min(540px, 96vw);
+      margin: 0.5rem auto 0;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-family: Arial, sans-serif;
+      font-size: 0.82rem;
+    }
+
+    #power-label { color: var(--green-lt); letter-spacing:0.08em; text-transform:uppercase; white-space:nowrap; }
+
+    #power-bar-outer {
+      flex: 1;
+      height: 12px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    #power-bar-inner {
+      height: 100%;
+      width: 50%;
+      background: linear-gradient(90deg, var(--green-lt), var(--sand));
+      border-radius: 6px;
+      transition: width 0.05s;
+    }
+
+    #power-val { color: var(--sand); font-weight: bold; min-width: 38px; text-align: right; }
+
+    input[type=range] {
+      flex:1;
+      accent-color: var(--sand);
+      height: 6px;
+    }
+
+    #message-box {
+      height: 32px;
+      font-family: Arial, sans-serif;
+      font-size: 1rem;
+      color: var(--sand);
+      text-align: center;
+      font-weight: bold;
+      letter-spacing: 0.04em;
+      margin: 0.25rem 0;
+    }
+
+    #btn-row {
+      display: flex;
+      gap: 1rem;
+      margin: 0.5rem 0 1.25rem;
+    }
+
+    .game-btn {
+      background: var(--sand);
+      color: var(--green-dark);
+      border: none;
+      border-radius: 6px;
+      padding: 0.6rem 1.75rem;
+      font-family: Arial, sans-serif;
+      font-weight: bold;
+      font-size: 0.9rem;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .game-btn:hover { background: #f4d47a; transform:translateY(-2px); }
+    .game-btn.secondary { background: rgba(255,255,255,0.1); color: var(--cream); border: 1px solid rgba(255,255,255,0.2); }
+    .game-btn.secondary:hover { background: rgba(255,255,255,0.18); }
+
+    #instructions {
+      max-width: min(540px, 96vw);
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(233,196,106,0.2);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      font-family: Arial, sans-serif;
+      font-size: 0.82rem;
+      color: rgba(254,250,224,0.65);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div id="topbar">
+  <a href="scratch.html">← Scratch Page</a>
+  <h1>⛳ Putting Green</h1>
+  <a href="index.html">Home</a>
+</div>
+
+<div id="scoreboard">
+  <div class="score-box">
+    <div class="score-label">Hole</div>
+    <div class="score-val" id="sc-hole">1</div>
+  </div>
+  <div class="score-box">
+    <div class="score-label">Putts</div>
+    <div class="score-val" id="sc-putts">0</div>
+  </div>
+  <div class="score-box">
+    <div class="score-label">Made</div>
+    <div class="score-val" id="sc-made">0</div>
+  </div>
+  <div class="score-box">
+    <div class="score-label">Score</div>
+    <div class="score-val" id="sc-score">0</div>
+  </div>
+</div>
+
+<div id="game-area">
+  <canvas id="gc" width="540" height="540"></canvas>
+  <div id="aim-indicator"></div>
+</div>
+
+<div id="power-wrap">
+  <span id="power-label">Power</span>
+  <input type="range" id="power-slider" min="5" max="100" value="40" oninput="syncPower()"/>
+  <div id="power-bar-outer"><div id="power-bar-inner"></div></div>
+  <span id="power-val">40%</span>
+</div>
+
+<div id="message-box">Click the green to aim — then hit PUTT!</div>
+
+<div id="btn-row">
+  <button class="game-btn" onclick="putt()">PUTT ⛳</button>
+  <button class="game-btn secondary" onclick="nextHole()">Next Hole →</button>
+  <button class="game-btn secondary" onclick="resetGame()">Reset</button>
+</div>
+
+<div id="instructions">
+  🎯 <strong style="color:var(--sand)">How to play:</strong> Click anywhere on the green to set your aim direction. Adjust power with the slider. Hit <strong style="color:var(--sand)">PUTT</strong> to shoot! Sink it in as few putts as possible. Watch out for the rough (darker patches) — the ball slows down there. Each hole has a different cup location.
+</div>
+
+<script>
+const canvas = document.getElementById('gc');
+const ctx = canvas.getContext('2d');
+const W = 540, H = 540;
+let scale = 1;
+
+function getScale() {
+  return canvas.getBoundingClientRect().width / W;
+}
+
+// Game state
+let state = {
+  hole: 1,
+  putts: 0,
+  made: 0,
+  score: 0,
+  ball: { x: 270, y: 420 },
+  cup:  { x: 270, y: 130 },
+  vel:  { x: 0, y: 0 },
+  rolling: false,
+  aimX: 270, aimY: 130,
+  aimed: false,
+  settled: false,
+  message: '',
+  showTrail: false,
+  trail: [],
+  roughPatches: [],
+  holeComplete: false,
+};
+
+// Rough patch definitions per hole
+const roughDefs = [
+  [ {x:80,y:80,r:70}, {x:420,y:350,r:60}, {x:200,y:300,r:50} ],
+  [ {x:300,y:200,r:80}, {x:100,y:400,r:55}, {x:430,y:120,r:45} ],
+  [ {x:150,y:150,r:65}, {x:370,y:370,r:75}, {x:260,y:280,r:45} ],
+  [ {x:420,y:180,r:80}, {x:100,y:300,r:50}, {x:300,y:430,r:60} ],
+  [ {x:200,y:100,r:55}, {x:400,y:300,r:70}, {x:130,y:420,r:50} ],
+];
+
+const holeDefs = [
+  {cup:{x:270,y:110}, ball:{x:270,y:420}},
+  {cup:{x:100,y:120}, ball:{x:420,y:430}},
+  {cup:{x:450,y:100}, ball:{x:90,y:440}},
+  {cup:{x:270,y:270}, ball:{x:80,y:460}},
+  {cup:{x:460,y:460}, ball:{x:80,y:80}},
+];
+
+function initHole() {
+  const idx = (state.hole - 1) % holeDefs.length;
+  const h = holeDefs[idx];
+  state.ball = { ...h.ball };
+  state.cup  = { ...h.cup };
+  state.vel  = { x:0, y:0 };
+  state.rolling = false;
+  state.aimed = false;
+  state.aimX = state.cup.x;
+  state.aimY = state.cup.y;
+  state.trail = [];
+  state.roughPatches = roughDefs[idx];
+  state.holeComplete = false;
+  setMsg('Click the green to aim, then hit PUTT!');
+  updateUI();
+  draw();
+}
+
+function isRough(x, y) {
+  for (const p of state.roughPatches) {
+    const dx = x - p.x, dy = y - p.y;
+    if (dx*dx + dy*dy < p.r*p.r) return true;
+  }
+  return false;
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+
+  // Green gradient base
+  const grd = ctx.createRadialGradient(270,270,20,270,270,300);
+  grd.addColorStop(0, '#3a7d44');
+  grd.addColorStop(1, '#2d6a4f');
+  ctx.fillStyle = grd;
+  ctx.beginPath();
+  ctx.roundRect(0, 0, W, H, 12);
+  ctx.fill();
+
+  // Subtle grid lines (grain)
+  ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+  ctx.lineWidth = 1;
+  for (let x = 0; x < W; x += 30) {
+    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
+  }
+  for (let y = 0; y < H; y += 30) {
+    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+  }
+
+  // Rough patches
+  for (const p of state.roughPatches) {
+    const rg = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r);
+    rg.addColorStop(0, 'rgba(30,80,40,0.7)');
+    rg.addColorStop(1, 'rgba(30,80,40,0)');
+    ctx.fillStyle = rg;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  // Aim line
+  if (state.aimed && !state.rolling) {
+    ctx.strokeStyle = 'rgba(233,196,106,0.45)';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([6, 5]);
+    ctx.beginPath();
+    ctx.moveTo(state.ball.x, state.ball.y);
+    ctx.lineTo(state.aimX, state.aimY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // Trail
+  if (state.trail.length > 1) {
+    ctx.strokeStyle = 'rgba(233,196,106,0.35)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(state.trail[0].x, state.trail[0].y);
+    for (let i = 1; i < state.trail.length; i++) {
+      ctx.lineTo(state.trail[i].x, state.trail[i].y);
+    }
+    ctx.stroke();
+  }
+
+  // Cup shadow
+  ctx.beginPath();
+  ctx.arc(state.cup.x + 2, state.cup.y + 2, 14, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(0,0,0,0.35)';
+  ctx.fill();
+
+  // Cup
+  ctx.beginPath();
+  ctx.arc(state.cup.x, state.cup.y, 14, 0, Math.PI*2);
+  ctx.fillStyle = '#111';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // Flag
+  ctx.strokeStyle = '#ccc';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(state.cup.x, state.cup.y - 14);
+  ctx.lineTo(state.cup.x, state.cup.y - 40);
+  ctx.stroke();
+  ctx.fillStyle = '#e63946';
+  ctx.beginPath();
+  ctx.moveTo(state.cup.x, state.cup.y - 40);
+  ctx.lineTo(state.cup.x + 20, state.cup.y - 32);
+  ctx.lineTo(state.cup.x, state.cup.y - 24);
+  ctx.fill();
+
+  // Distance indicator
+  if (!state.rolling && !state.holeComplete) {
+    const dx = state.cup.x - state.ball.x;
+    const dy = state.cup.y - state.ball.y;
+    const dist = Math.round(Math.sqrt(dx*dx+dy*dy) * 0.15);
+    ctx.font = '12px Arial';
+    ctx.fillStyle = 'rgba(254,250,224,0.55)';
+    ctx.textAlign = 'center';
+    ctx.fillText(`${dist} ft`, state.cup.x, state.cup.y + 28);
+  }
+
+  // Ball shadow
+  ctx.beginPath();
+  ctx.arc(state.ball.x + 2, state.ball.y + 2, 11, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(0,0,0,0.25)';
+  ctx.fill();
+
+  // Ball
+  const ballGrd = ctx.createRadialGradient(state.ball.x-3, state.ball.y-3, 1, state.ball.x, state.ball.y, 11);
+  ballGrd.addColorStop(0, '#ffffff');
+  ballGrd.addColorStop(0.6, '#e8e8e8');
+  ballGrd.addColorStop(1, '#c0c0c0');
+  ctx.beginPath();
+  ctx.arc(state.ball.x, state.ball.y, 11, 0, Math.PI*2);
+  ctx.fillStyle = ballGrd;
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // Dimple detail
+  ctx.fillStyle = 'rgba(0,0,0,0.06)';
+  [[4,2],[−2,5],[5,−4],[−4,−3]].forEach(([ox,oy]) => {
+    ctx.beginPath();
+    ctx.arc(state.ball.x+ox, state.ball.y+oy, 1.5, 0, Math.PI*2);
+    ctx.fill();
+  });
+
+  // Hole number
+  ctx.font = 'bold 13px Arial';
+  ctx.fillStyle = 'rgba(254,250,224,0.35)';
+  ctx.textAlign = 'left';
+  ctx.fillText(`HOLE ${state.hole}`, 14, 24);
+}
+
+// Physics loop
+let animFrame;
+function physicsLoop() {
+  if (!state.rolling) return;
+  state.trail.push({x: state.ball.x, y: state.ball.y});
+  if (state.trail.length > 60) state.trail.shift();
+
+  const rough = isRough(state.ball.x, state.ball.y);
+  const friction = rough ? 0.965 : 0.984;
+
+  state.vel.x *= friction;
+  state.vel.y *= friction;
+  state.ball.x += state.vel.x;
+  state.ball.y += state.vel.y;
+
+  // Walls
+  if (state.ball.x < 12)  { state.ball.x = 12;  state.vel.x *= -0.5; }
+  if (state.ball.x > W-12){ state.ball.x = W-12; state.vel.x *= -0.5; }
+  if (state.ball.y < 12)  { state.ball.y = 12;   state.vel.y *= -0.5; }
+  if (state.ball.y > H-12){ state.ball.y = H-12;  state.vel.y *= -0.5; }
+
+  const speed = Math.sqrt(state.vel.x**2 + state.vel.y**2);
+
+  // Cup check
+  const dcx = state.ball.x - state.cup.x;
+  const dcy = state.ball.y - state.cup.y;
+  const distCup = Math.sqrt(dcx*dcx + dcy*dcy);
+  if (distCup < 14 && speed < 4.5) {
+    holeMade();
+    return;
+  }
+
+  if (speed < 0.08) {
+    state.rolling = false;
+    setMsg('Missed — click to re-aim and putt again.');
+    draw();
+    return;
+  }
+
+  draw();
+  animFrame = requestAnimationFrame(physicsLoop);
+}
+
+function holeMade() {
+  state.rolling = false;
+  state.made++;
+  state.score += scoreFor(state.putts + 1);
+  state.putts = 0;
+  state.holeComplete = true;
+  state.ball = { x: state.cup.x, y: state.cup.y };
+  state.vel = { x:0, y:0 };
+  state.trail = [];
+
+  const msgs = ['Hole out! 🎉', 'It\'s in! ⛳', 'Nailed it! 🏆', 'Beauty! 👏', 'Get in! 🎊'];
+  setMsg(msgs[Math.floor(Math.random()*msgs.length)] + ' — Click "Next Hole"');
+  updateUI();
+  draw();
+}
+
+function scoreFor(putts) {
+  if (putts === 1) return 3;
+  if (putts === 2) return 2;
+  if (putts === 3) return 1;
+  return 0;
+}
+
+function putt() {
+  if (state.rolling || state.holeComplete) return;
+  if (!state.aimed) { setMsg('Click on the green first to aim!'); return; }
+
+  const power = parseInt(document.getElementById('power-slider').value);
+  const dx = state.aimX - state.ball.x;
+  const dy = state.aimY - state.ball.y;
+  const dist = Math.sqrt(dx*dx + dy*dy) || 1;
+  const speed = power * 0.135;
+
+  state.vel.x = (dx / dist) * speed;
+  state.vel.y = (dy / dist) * speed;
+  state.rolling = true;
+  state.putts++;
+  state.trail = [];
+  updateUI();
+  animFrame = requestAnimationFrame(physicsLoop);
+}
+
+function nextHole() {
+  if (!state.holeComplete) {
+    setMsg('Finish the current hole first!');
+    return;
+  }
+  state.hole++;
+  initHole();
+}
+
+function resetGame() {
+  cancelAnimationFrame(animFrame);
+  state.hole = 1;
+  state.putts = 0;
+  state.made = 0;
+  state.score = 0;
+  initHole();
+}
+
+function setMsg(m) {
+  document.getElementById('message-box').textContent = m;
+  state.message = m;
+}
+
+function updateUI() {
+  document.getElementById('sc-hole').textContent  = state.hole;
+  document.getElementById('sc-putts').textContent = state.putts;
+  document.getElementById('sc-made').textContent  = state.made;
+  document.getElementById('sc-score').textContent = state.score;
+}
+
+function syncPower() {
+  const val = document.getElementById('power-slider').value;
+  document.getElementById('power-val').textContent = val + '%';
+  document.getElementById('power-bar-inner').style.width = val + '%';
+}
+
+// Canvas click for aiming
+canvas.addEventListener('click', (e) => {
+  if (state.rolling || state.holeComplete) return;
+  const rect = canvas.getBoundingClientRect();
+  const scl = W / rect.width;
+  state.aimX = (e.clientX - rect.left) * scl;
+  state.aimY = (e.clientY - rect.top) * scl;
+  state.aimed = true;
+  draw();
+});
+
+canvas.addEventListener('mousemove', (e) => {
+  if (state.rolling) return;
+  const aim = document.getElementById('aim-indicator');
+  const rect = canvas.getBoundingClientRect();
+  aim.style.display = 'block';
+  aim.style.left = (e.clientX - rect.left) + 'px';
+  aim.style.top  = (e.clientY - rect.top) + 'px';
+});
+
+canvas.addEventListener('mouseleave', () => {
+  document.getElementById('aim-indicator').style.display = 'none';
+});
+
+// Init
+syncPower();
+initHole();
+</script>
+
+</body>
+</html>
