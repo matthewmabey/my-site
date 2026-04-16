@@ -7,180 +7,33 @@
   <style>
     :root {
       --green-dark: #1a3d2b;
-      --green-mid:  #2d6a4f;
-      --green-play: #3a7d44;
-      --green-lt:   #52b788;
-      --sand:       #e9c46a;
-      --cream:      #fefae0;
-      --brown:      #6b4226;
-      --sky:        #a8dadc;
+      --sand: #e9c46a;
+      --cream: #fefae0;
+      --green-lt: #52b788;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: 'Georgia', serif;
-      background: var(--green-dark);
-      color: var(--cream);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      overflow-x: hidden;
-    }
-
-    #topbar {
-      width: 100%;
-      background: rgba(0,0,0,0.35);
-      border-bottom: 2px solid var(--sand);
-      padding: 0.75rem 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    #topbar a {
-      color: var(--sand);
-      text-decoration: none;
-      font-family: Arial, sans-serif;
-      font-size: 0.82rem;
-      letter-spacing: 0.05em;
-    }
-
-    #topbar h1 {
-      font-size: 1.3rem;
-      color: var(--cream);
-      letter-spacing: 0.06em;
-    }
-
-    #scoreboard {
-      display: flex;
-      gap: 2rem;
-      margin: 1rem 0 0.5rem;
-      font-family: Arial, sans-serif;
-    }
-
-    .score-box {
-      text-align: center;
-      background: rgba(0,0,0,0.3);
-      border: 1px solid rgba(233,196,106,0.3);
-      border-radius: 8px;
-      padding: 0.5rem 1.25rem;
-    }
+    body { font-family: 'Georgia', serif; background: var(--green-dark); color: var(--cream); min-height: 100vh; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; }
+    #topbar { width: 100%; background: rgba(0,0,0,0.4); border-bottom: 2px solid var(--sand); padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    #topbar a { color: var(--sand); text-decoration: none; font-family: Arial, sans-serif; font-size: 0.82rem; letter-spacing: 0.05em; }
+    #topbar h1 { font-size: 1.3rem; color: var(--cream); letter-spacing: 0.06em; }
+    #scoreboard { display: flex; gap: 2rem; margin: 1rem 0 0.5rem; font-family: Arial, sans-serif; }
+    .score-box { text-align: center; background: rgba(0,0,0,0.3); border: 1px solid rgba(233,196,106,0.3); border-radius: 8px; padding: 0.5rem 1.25rem; }
     .score-label { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--green-lt); }
-    .score-val   { font-size: 1.6rem; font-weight: bold; color: var(--sand); line-height: 1.1; }
-
-    #game-area {
-      position: relative;
-      width: min(540px, 96vw);
-      height: min(540px, 96vw);
-      margin: 0.75rem auto;
-      user-select: none;
-    }
-
-    canvas {
-      border-radius: 12px;
-      display: block;
-      width: 100%;
-      height: 100%;
-      cursor: crosshair;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.5), inset 0 0 0 3px rgba(233,196,106,0.25);
-    }
-
-    #aim-indicator {
-      position: absolute;
-      pointer-events: none;
-      border: 2px dashed rgba(233,196,106,0.6);
-      border-radius: 50%;
-      width: 24px; height: 24px;
-      transform: translate(-50%,-50%);
-      display: none;
-    }
-
-    #power-wrap {
-      width: min(540px, 96vw);
-      margin: 0.5rem auto 0;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      font-family: Arial, sans-serif;
-      font-size: 0.82rem;
-    }
-
-    #power-label { color: var(--green-lt); letter-spacing:0.08em; text-transform:uppercase; white-space:nowrap; }
-
-    #power-bar-outer {
-      flex: 1;
-      height: 12px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 6px;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.15);
-    }
-
-    #power-bar-inner {
-      height: 100%;
-      width: 50%;
-      background: linear-gradient(90deg, var(--green-lt), var(--sand));
-      border-radius: 6px;
-      transition: width 0.05s;
-    }
-
-    #power-val { color: var(--sand); font-weight: bold; min-width: 38px; text-align: right; }
-
-    input[type=range] {
-      flex:1;
-      accent-color: var(--sand);
-      height: 6px;
-    }
-
-    #message-box {
-      height: 32px;
-      font-family: Arial, sans-serif;
-      font-size: 1rem;
-      color: var(--sand);
-      text-align: center;
-      font-weight: bold;
-      letter-spacing: 0.04em;
-      margin: 0.25rem 0;
-    }
-
-    #btn-row {
-      display: flex;
-      gap: 1rem;
-      margin: 0.5rem 0 1.25rem;
-    }
-
-    .game-btn {
-      background: var(--sand);
-      color: var(--green-dark);
-      border: none;
-      border-radius: 6px;
-      padding: 0.6rem 1.75rem;
-      font-family: Arial, sans-serif;
-      font-weight: bold;
-      font-size: 0.9rem;
-      cursor: pointer;
-      letter-spacing: 0.04em;
-      transition: background 0.2s, transform 0.15s;
-    }
-    .game-btn:hover { background: #f4d47a; transform:translateY(-2px); }
+    .score-val { font-size: 1.6rem; font-weight: bold; color: var(--sand); line-height: 1.1; }
+    #game-area { position: relative; width: min(540px, 96vw); height: min(540px, 96vw); margin: 0.5rem auto; user-select: none; touch-action: none; }
+    canvas { border-radius: 12px; display: block; width: 100%; height: 100%; cursor: crosshair; box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 0 3px rgba(233,196,106,0.3); }
+    #power-wrap { width: min(540px, 96vw); margin: 0.5rem auto 0; display: flex; align-items: center; gap: 1rem; font-family: Arial, sans-serif; font-size: 0.82rem; }
+    #power-label { color: var(--green-lt); letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
+    #power-bar-outer { flex: 1; height: 14px; background: rgba(255,255,255,0.1); border-radius: 7px; overflow: hidden; border: 1px solid rgba(255,255,255,0.15); }
+    #power-bar-inner { height: 100%; width: 0%; border-radius: 7px; transition: width 0.05s, background 0.1s; }
+    #power-val { color: var(--sand); font-weight: bold; min-width: 42px; text-align: right; }
+    #message-box { height: 28px; font-family: Arial, sans-serif; font-size: 0.95rem; color: var(--sand); text-align: center; font-weight: bold; letter-spacing: 0.04em; margin: 0.3rem 0; }
+    #btn-row { display: flex; gap: 1rem; margin: 0.4rem 0 1rem; }
+    .game-btn { background: var(--sand); color: var(--green-dark); border: none; border-radius: 6px; padding: 0.6rem 1.75rem; font-family: Arial, sans-serif; font-weight: bold; font-size: 0.9rem; cursor: pointer; transition: background 0.2s, transform 0.15s; }
+    .game-btn:hover { background: #f4d47a; transform: translateY(-2px); }
     .game-btn.secondary { background: rgba(255,255,255,0.1); color: var(--cream); border: 1px solid rgba(255,255,255,0.2); }
     .game-btn.secondary:hover { background: rgba(255,255,255,0.18); }
-
-    #instructions {
-      max-width: min(540px, 96vw);
-      background: rgba(0,0,0,0.25);
-      border: 1px solid rgba(233,196,106,0.2);
-      border-radius: 8px;
-      padding: 1rem 1.25rem;
-      font-family: Arial, sans-serif;
-      font-size: 0.82rem;
-      color: rgba(254,250,224,0.65);
-      line-height: 1.6;
-      margin-bottom: 1.5rem;
-      text-align: center;
-    }
+    #instructions { max-width: min(540px, 96vw); background: rgba(0,0,0,0.25); border: 1px solid rgba(233,196,106,0.2); border-radius: 8px; padding: 0.85rem 1.25rem; font-family: Arial, sans-serif; font-size: 0.8rem; color: rgba(254,250,224,0.6); line-height: 1.6; margin-bottom: 1.5rem; text-align: center; }
   </style>
 </head>
 <body>
@@ -192,27 +45,14 @@
 </div>
 
 <div id="scoreboard">
-  <div class="score-box">
-    <div class="score-label">Hole</div>
-    <div class="score-val" id="sc-hole">1</div>
-  </div>
-  <div class="score-box">
-    <div class="score-label">Putts</div>
-    <div class="score-val" id="sc-putts">0</div>
-  </div>
-  <div class="score-box">
-    <div class="score-label">Made</div>
-    <div class="score-val" id="sc-made">0</div>
-  </div>
-  <div class="score-box">
-    <div class="score-label">Score</div>
-    <div class="score-val" id="sc-score">0</div>
-  </div>
+  <div class="score-box"><div class="score-label">Hole</div><div class="score-val" id="sc-hole">1</div></div>
+  <div class="score-box"><div class="score-label">Putts</div><div class="score-val" id="sc-putts">0</div></div>
+  <div class="score-box"><div class="score-label">Made</div><div class="score-val" id="sc-made">0</div></div>
+  <div class="score-box"><div class="score-label">Score</div><div class="score-val" id="sc-score">0</div></div>
 </div>
 
 <div id="game-area">
   <canvas id="gc" width="540" height="540"></canvas>
-  <div id="aim-indicator"></div>
 </div>
 
 <div id="power-wrap">
@@ -231,362 +71,393 @@
 </div>
 
 <div id="instructions">
-  🎯 <strong style="color:var(--sand)">How to play:</strong> Click anywhere on the green to set your aim direction. Adjust power with the slider. Hit <strong style="color:var(--sand)">PUTT</strong> to shoot! Sink it in as few putts as possible. Watch out for the rough (darker patches) — the ball slows down there. Each hole has a different cup location.
+  🎯 <strong style="color:var(--sand)">Click the green to aim</strong>, adjust power with the slider, then hit <strong style="color:var(--sand)">PUTT</strong>. Follow the arrows — they show which way the ball will break!
 </div>
 
 <script>
 const canvas = document.getElementById('gc');
 const ctx = canvas.getContext('2d');
 const W = 540, H = 540;
-let scale = 1;
 
-function getScale() {
-  return canvas.getBoundingClientRect().width / W;
-}
-
-// Game state
-let state = {
-  hole: 1,
-  putts: 0,
-  made: 0,
-  score: 0,
-  ball: { x: 270, y: 420 },
-  cup:  { x: 270, y: 130 },
-  vel:  { x: 0, y: 0 },
-  rolling: false,
-  aimX: 270, aimY: 130,
-  aimed: false,
-  settled: false,
-  message: '',
-  showTrail: false,
-  trail: [],
-  roughPatches: [],
-  holeComplete: false,
-};
-
-// Rough patch definitions per hole
-const roughDefs = [
-  [ {x:80,y:80,r:70}, {x:420,y:350,r:60}, {x:200,y:300,r:50} ],
-  [ {x:300,y:200,r:80}, {x:100,y:400,r:55}, {x:430,y:120,r:45} ],
-  [ {x:150,y:150,r:65}, {x:370,y:370,r:75}, {x:260,y:280,r:45} ],
-  [ {x:420,y:180,r:80}, {x:100,y:300,r:50}, {x:300,y:430,r:60} ],
-  [ {x:200,y:100,r:55}, {x:400,y:300,r:70}, {x:130,y:420,r:50} ],
-];
-
+// ── HEIGHT MAP DEFINITIONS ──────────────────────────────────────
 const holeDefs = [
-  {cup:{x:270,y:110}, ball:{x:270,y:420}},
-  {cup:{x:100,y:120}, ball:{x:420,y:430}},
-  {cup:{x:450,y:100}, ball:{x:90,y:440}},
-  {cup:{x:270,y:270}, ball:{x:80,y:460}},
-  {cup:{x:460,y:460}, ball:{x:80,y:80}},
+  {
+    cup:{x:270,y:95}, ball:{x:270,y:445},
+    breakLabel: 'Gentle right tilt — aim slightly left of the hole',
+    heightFn:(x,y) => 0.5 + (x-270)*0.00055 - (y-270)*0.00015
+  },
+  {
+    cup:{x:105,y:105}, ball:{x:430,y:440},
+    breakLabel: 'Ridge through the middle — big right-to-left break',
+    heightFn:(x,y) => {
+      const ridge = Math.exp(-Math.pow((x-185-y*0.22)/80,2))*0.38;
+      return 0.42 + ridge - (y-270)*0.00022;
+    }
+  },
+  {
+    cup:{x:440,y:105}, ball:{x:100,y:450},
+    breakLabel: 'Bowl — everything drains toward the center',
+    heightFn:(x,y) => {
+      const dx=x-310, dy=y-235;
+      return 0.78 - (dx*dx+dy*dy)/210000;
+    }
+  },
+  {
+    cup:{x:270,y:270}, ball:{x:80,y:460},
+    breakLabel: 'Two-tier green — big shelf in the middle',
+    heightFn:(x,y) => {
+      const blend = 1/(1+Math.exp(-(y-282)*0.08));
+      return 0.73*(1-blend)+0.30*blend+(x-270)*0.00022;
+    }
+  },
+  {
+    cup:{x:450,y:450}, ball:{x:90,y:90},
+    breakLabel: 'Left swale — ball curves hard left on the back nine',
+    heightFn:(x,y) => {
+      const valley=Math.exp(-Math.pow((x-140)/90,2))*-0.30;
+      return 0.60+valley+(y-270)*0.00032;
+    }
+  }
 ];
 
-function initHole() {
-  const idx = (state.hole - 1) % holeDefs.length;
-  const h = holeDefs[idx];
-  state.ball = { ...h.ball };
-  state.cup  = { ...h.cup };
-  state.vel  = { x:0, y:0 };
-  state.rolling = false;
-  state.aimed = false;
-  state.aimX = state.cup.x;
-  state.aimY = state.cup.y;
-  state.trail = [];
-  state.roughPatches = roughDefs[idx];
-  state.holeComplete = false;
-  setMsg('Click the green to aim, then hit PUTT!');
-  updateUI();
-  draw();
+const roughDefs = [
+  [{x:75,y:75,r:60},{x:415,y:345,r:52},{x:185,y:305,r:44}],
+  [{x:295,y:195,r:70},{x:95,y:395,r:46},{x:425,y:115,r:38}],
+  [{x:145,y:155,r:56},{x:375,y:365,r:66},{x:255,y:275,r:40}],
+  [{x:415,y:185,r:70},{x:105,y:295,r:44},{x:295,y:425,r:54}],
+  [{x:195,y:105,r:48},{x:395,y:305,r:60},{x:125,y:415,r:44}],
+];
+
+// ── HEIGHT GRID ─────────────────────────────────────────────────
+const GRID = 60;
+let heightGrid = [], hMin = 0, hMax = 1;
+
+function buildHeightGrid(fn) {
+  heightGrid = [];
+  hMin = Infinity; hMax = -Infinity;
+  for (let r=0; r<=GRID; r++) {
+    heightGrid[r] = [];
+    for (let c=0; c<=GRID; c++) {
+      const v = fn((c/GRID)*W, (r/GRID)*H);
+      heightGrid[r][c] = v;
+      if(v<hMin) hMin=v;
+      if(v>hMax) hMax=v;
+    }
+  }
 }
 
-function isRough(x, y) {
-  for (const p of state.roughPatches) {
-    const dx = x - p.x, dy = y - p.y;
-    if (dx*dx + dy*dy < p.r*p.r) return true;
+function getHeightAt(x, y, fn) {
+  return fn(x, y);
+}
+
+function getSlopeAt(x, y, fn) {
+  const e = 3;
+  return {
+    gx: (fn(x+e,y)-fn(x-e,y))/(2*e),
+    gy: (fn(x,y+e)-fn(x,y-e))/(2*e)
+  };
+}
+
+function isRough(x, y, idx) {
+  for (const p of roughDefs[idx%roughDefs.length]) {
+    const dx=x-p.x, dy=y-p.y;
+    if(dx*dx+dy*dy < p.r*p.r) return true;
   }
   return false;
 }
 
-function draw() {
-  ctx.clearRect(0, 0, W, H);
+// ── GAME STATE ──────────────────────────────────────────────────
+let state = {
+  hole:1, putts:0, made:0, score:0,
+  ball:{x:270,y:445}, cup:{x:270,y:95},
+  vel:{x:0,y:0},
+  rolling:false,
+  aimed:false, aimX:270, aimY:95,
+  trail:[], holeComplete:false,
+  heightFn:null, holeIdx:0
+};
 
-  // Green gradient base
-  const grd = ctx.createRadialGradient(270,270,20,270,270,300);
-  grd.addColorStop(0, '#3a7d44');
-  grd.addColorStop(1, '#2d6a4f');
-  ctx.fillStyle = grd;
-  ctx.beginPath();
-  ctx.roundRect(0, 0, W, H, 12);
-  ctx.fill();
 
-  // Subtle grid lines (grain)
-  ctx.strokeStyle = 'rgba(255,255,255,0.03)';
-  ctx.lineWidth = 1;
-  for (let x = 0; x < W; x += 30) {
-    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
-  }
-  for (let y = 0; y < H; y += 30) {
-    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
-  }
-
-  // Rough patches
-  for (const p of state.roughPatches) {
-    const rg = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r);
-    rg.addColorStop(0, 'rgba(30,80,40,0.7)');
-    rg.addColorStop(1, 'rgba(30,80,40,0)');
-    ctx.fillStyle = rg;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-    ctx.fill();
-  }
-
-  // Aim line
-  if (state.aimed && !state.rolling) {
-    ctx.strokeStyle = 'rgba(233,196,106,0.45)';
-    ctx.lineWidth = 1.5;
-    ctx.setLineDash([6, 5]);
-    ctx.beginPath();
-    ctx.moveTo(state.ball.x, state.ball.y);
-    ctx.lineTo(state.aimX, state.aimY);
-    ctx.stroke();
-    ctx.setLineDash([]);
-  }
-
-  // Trail
-  if (state.trail.length > 1) {
-    ctx.strokeStyle = 'rgba(233,196,106,0.35)';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(state.trail[0].x, state.trail[0].y);
-    for (let i = 1; i < state.trail.length; i++) {
-      ctx.lineTo(state.trail[i].x, state.trail[i].y);
-    }
-    ctx.stroke();
-  }
-
-  // Cup shadow
-  ctx.beginPath();
-  ctx.arc(state.cup.x + 2, state.cup.y + 2, 14, 0, Math.PI*2);
-  ctx.fillStyle = 'rgba(0,0,0,0.35)';
-  ctx.fill();
-
-  // Cup
-  ctx.beginPath();
-  ctx.arc(state.cup.x, state.cup.y, 14, 0, Math.PI*2);
-  ctx.fillStyle = '#111';
-  ctx.fill();
-  ctx.strokeStyle = 'rgba(255,255,255,0.2)';
-  ctx.lineWidth = 1;
-  ctx.stroke();
-
-  // Flag
-  ctx.strokeStyle = '#ccc';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(state.cup.x, state.cup.y - 14);
-  ctx.lineTo(state.cup.x, state.cup.y - 40);
-  ctx.stroke();
-  ctx.fillStyle = '#e63946';
-  ctx.beginPath();
-  ctx.moveTo(state.cup.x, state.cup.y - 40);
-  ctx.lineTo(state.cup.x + 20, state.cup.y - 32);
-  ctx.lineTo(state.cup.x, state.cup.y - 24);
-  ctx.fill();
-
-  // Distance indicator
-  if (!state.rolling && !state.holeComplete) {
-    const dx = state.cup.x - state.ball.x;
-    const dy = state.cup.y - state.ball.y;
-    const dist = Math.round(Math.sqrt(dx*dx+dy*dy) * 0.15);
-    ctx.font = '12px Arial';
-    ctx.fillStyle = 'rgba(254,250,224,0.55)';
-    ctx.textAlign = 'center';
-    ctx.fillText(`${dist} ft`, state.cup.x, state.cup.y + 28);
-  }
-
-  // Ball shadow
-  ctx.beginPath();
-  ctx.arc(state.ball.x + 2, state.ball.y + 2, 11, 0, Math.PI*2);
-  ctx.fillStyle = 'rgba(0,0,0,0.25)';
-  ctx.fill();
-
-  // Ball
-  const ballGrd = ctx.createRadialGradient(state.ball.x-3, state.ball.y-3, 1, state.ball.x, state.ball.y, 11);
-  ballGrd.addColorStop(0, '#ffffff');
-  ballGrd.addColorStop(0.6, '#e8e8e8');
-  ballGrd.addColorStop(1, '#c0c0c0');
-  ctx.beginPath();
-  ctx.arc(state.ball.x, state.ball.y, 11, 0, Math.PI*2);
-  ctx.fillStyle = ballGrd;
-  ctx.fill();
-  ctx.strokeStyle = 'rgba(0,0,0,0.15)';
-  ctx.lineWidth = 1;
-  ctx.stroke();
-
-  // Dimple detail
-  ctx.fillStyle = 'rgba(0,0,0,0.06)';
-  [[4,2],[−2,5],[5,−4],[−4,−3]].forEach(([ox,oy]) => {
-    ctx.beginPath();
-    ctx.arc(state.ball.x+ox, state.ball.y+oy, 1.5, 0, Math.PI*2);
-    ctx.fill();
-  });
-
-  // Hole number
-  ctx.font = 'bold 13px Arial';
-  ctx.fillStyle = 'rgba(254,250,224,0.35)';
-  ctx.textAlign = 'left';
-  ctx.fillText(`HOLE ${state.hole}`, 14, 24);
+function initHole() {
+  const idx = (state.hole-1) % holeDefs.length;
+  const h = holeDefs[idx];
+  state.ball = {...h.ball};
+  state.cup  = {...h.cup};
+  state.vel  = {x:0,y:0};
+  state.aimed = false;
+  state.trail = [];
+  state.holeComplete = false;
+  state.heightFn = h.heightFn;
+  state.holeIdx = idx;
+  buildHeightGrid(h.heightFn);
+  setMsg('📖 ' + h.breakLabel);
+  syncPower();
+  updateUI();
+  draw();
 }
 
-// Physics loop
+// ── DRAW ────────────────────────────────────────────────────────
+function draw() {
+  ctx.clearRect(0,0,W,H);
+  drawGreen();
+  drawSimpleGrid();
+  drawTrail();
+  drawAimLine();
+  drawCup();
+  drawBall();
+  drawOverlayText();
+}
+
+function drawGreen() {
+  // Clean flat green
+  ctx.fillStyle = '#3d7a45';
+  ctx.beginPath(); ctx.roundRect(0,0,W,H,12); ctx.fill();
+}
+
+function drawSimpleGrid() {
+  // Faint grid
+  const COLS=12, ROWS=12;
+  const cellW=W/COLS, cellH=H/ROWS;
+  ctx.strokeStyle='rgba(255,255,255,0.12)';
+  ctx.lineWidth=1;
+  for (let c=0;c<=COLS;c++) { ctx.beginPath(); ctx.moveTo(c*cellW,0); ctx.lineTo(c*cellW,H); ctx.stroke(); }
+  for (let r=0;r<=ROWS;r++) { ctx.beginPath(); ctx.moveTo(0,r*cellH); ctx.lineTo(W,r*cellH); ctx.stroke(); }
+
+  // White arrows showing which way ball will break
+  const ACOLS=7, AROWS=7;
+  const aW=W/ACOLS, aH=H/AROWS;
+  for (let r=0;r<AROWS;r++) {
+    for (let c=0;c<ACOLS;c++) {
+      const cx=(c+0.5)*aW, cy=(r+0.5)*aH;
+      const s=getSlopeAt(cx,cy,state.heightFn);
+      const mag=Math.sqrt(s.gx**2+s.gy**2);
+      if(mag<0.00012) continue;
+      // Arrow points DOWNHILL (ball rolls this way)
+      const nx=-s.gx/mag, ny=-s.gy/mag;
+      const len=Math.min(mag*60000,22)+10;
+      const ex=cx+nx*len, ey=cy+ny*len;
+      const sx=cx-nx*len*0.4, sy=cy-ny*len*0.4;
+      const opacity=Math.min(0.3+mag*8000,0.85);
+      ctx.strokeStyle=`rgba(255,255,255,${opacity})`;
+      ctx.fillStyle=`rgba(255,255,255,${opacity})`;
+      ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(sx,sy); ctx.lineTo(ex,ey); ctx.stroke();
+      // Arrowhead
+      const ang=Math.atan2(ey-sy,ex-sx);
+      ctx.beginPath();
+      ctx.moveTo(ex,ey);
+      ctx.lineTo(ex-Math.cos(ang-0.45)*9, ey-Math.sin(ang-0.45)*9);
+      ctx.lineTo(ex-Math.cos(ang+0.45)*9, ey-Math.sin(ang+0.45)*9);
+      ctx.closePath(); ctx.fill();
+    }
+  }
+}
+
+function drawSimpleGrid() {
+  // Clean white grid, 12x12 cells
+  const COLS=12, ROWS=12;
+  const cellW=W/COLS, cellH=H/ROWS;
+
+  ctx.strokeStyle='rgba(255,255,255,0.18)';
+  ctx.lineWidth=1;
+
+  for (let c=0;c<=COLS;c++) {
+    ctx.beginPath();
+    ctx.moveTo(c*cellW, 0);
+    ctx.lineTo(c*cellW, H);
+    ctx.stroke();
+  }
+  for (let r=0;r<=ROWS;r++) {
+    ctx.beginPath();
+    ctx.moveTo(0, r*cellH);
+    ctx.lineTo(W, r*cellH);
+    ctx.stroke();
+  }
+}
+
+function drawRough() {
+  const patches = roughDefs[state.holeIdx % roughDefs.length];
+  for (const p of patches) {
+    const g = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r);
+    g.addColorStop(0,'rgba(10,35,15,0.65)');
+    g.addColorStop(0.7,'rgba(10,35,15,0.35)');
+    g.addColorStop(1,'rgba(10,35,15,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
+  }
+}
+
+function drawAimLine() {
+  if (!state.aimed || state.rolling) return;
+  ctx.strokeStyle = 'rgba(233,196,106,0.55)';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([6,5]);
+  ctx.beginPath();
+  ctx.moveTo(state.ball.x, state.ball.y);
+  ctx.lineTo(state.aimX, state.aimY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+}
+
+function drawTrail() {
+  if(state.trail.length<2) return;
+  ctx.strokeStyle='rgba(233,196,106,0.6)';
+  ctx.lineWidth=2; ctx.lineCap='round';
+  ctx.beginPath();
+  ctx.moveTo(state.trail[0].x,state.trail[0].y);
+  for(let i=1;i<state.trail.length;i++) ctx.lineTo(state.trail[i].x,state.trail[i].y);
+  ctx.stroke();
+}
+
+function drawCup() {
+  ctx.beginPath();
+  ctx.arc(state.cup.x+2,state.cup.y+2,13,0,Math.PI*2);
+  ctx.fillStyle='rgba(0,0,0,0.45)'; ctx.fill();
+  ctx.beginPath();
+  ctx.arc(state.cup.x,state.cup.y,13,0,Math.PI*2);
+  ctx.fillStyle='#060606'; ctx.fill();
+  ctx.strokeStyle='rgba(255,255,255,0.15)'; ctx.lineWidth=1; ctx.stroke();
+  ctx.strokeStyle='#aaa'; ctx.lineWidth=2;
+  ctx.beginPath();
+  ctx.moveTo(state.cup.x,state.cup.y-13);
+  ctx.lineTo(state.cup.x,state.cup.y-44);
+  ctx.stroke();
+  ctx.fillStyle='#e63946';
+  ctx.beginPath();
+  ctx.moveTo(state.cup.x,state.cup.y-44);
+  ctx.lineTo(state.cup.x+21,state.cup.y-36);
+  ctx.lineTo(state.cup.x,state.cup.y-28);
+  ctx.fill();
+}
+
+function drawBall() {
+  ctx.beginPath();
+  ctx.arc(state.ball.x+2,state.ball.y+3,10,0,Math.PI*2);
+  ctx.fillStyle='rgba(0,0,0,0.3)'; ctx.fill();
+  const g=ctx.createRadialGradient(state.ball.x-3,state.ball.y-3,1,state.ball.x,state.ball.y,10);
+  g.addColorStop(0,'#fff'); g.addColorStop(0.65,'#e8e8e8'); g.addColorStop(1,'#b0b0b0');
+  ctx.beginPath();
+  ctx.arc(state.ball.x,state.ball.y,10,0,Math.PI*2);
+  ctx.fillStyle=g; ctx.fill();
+  ctx.strokeStyle='rgba(0,0,0,0.1)'; ctx.lineWidth=1; ctx.stroke();
+  ctx.fillStyle='rgba(0,0,0,0.07)';
+  [[3,2],[-2,4],[4,-3],[-3,-2]].forEach(([ox,oy])=>{
+    ctx.beginPath(); ctx.arc(state.ball.x+ox,state.ball.y+oy,1.4,0,Math.PI*2); ctx.fill();
+  });
+}
+
+function drawOverlayText() {
+  ctx.font='bold 12px Arial';
+  ctx.fillStyle='rgba(254,250,224,0.5)';
+  ctx.textAlign='left';
+  ctx.fillText(`HOLE ${state.hole}`, 14, 24);
+  if(!state.rolling && !state.holeComplete && !state.dragging) {
+    const dx=state.cup.x-state.ball.x, dy=state.cup.y-state.ball.y;
+    const dist=Math.round(Math.sqrt(dx*dx+dy*dy)*0.15);
+    ctx.font='11px Arial';
+    ctx.fillStyle='rgba(254,250,224,0.55)';
+    ctx.textAlign='center';
+    ctx.fillText(`${dist} ft`, state.cup.x, state.cup.y+30);
+  }
+}
+
+// ── PHYSICS ─────────────────────────────────────────────────────
+const GRAVITY   = 13;
+const FRIC      = 0.989;
+const FRIC_ROUGH= 0.970;
+
 let animFrame;
 function physicsLoop() {
-  if (!state.rolling) return;
-  state.trail.push({x: state.ball.x, y: state.ball.y});
-  if (state.trail.length > 60) state.trail.shift();
+  if(!state.rolling) return;
+  state.trail.push({x:state.ball.x, y:state.ball.y});
+  if(state.trail.length>90) state.trail.shift();
 
-  const rough = isRough(state.ball.x, state.ball.y);
-  const friction = rough ? 0.965 : 0.984;
+  const s=getSlopeAt(state.ball.x,state.ball.y,state.heightFn);
+  state.vel.x -= s.gx*GRAVITY;
+  state.vel.y -= s.gy*GRAVITY;
 
-  state.vel.x *= friction;
-  state.vel.y *= friction;
-  state.ball.x += state.vel.x;
-  state.ball.y += state.vel.y;
+  const f=isRough(state.ball.x,state.ball.y,state.holeIdx)?FRIC_ROUGH:FRIC;
+  state.vel.x*=f; state.vel.y*=f;
+  state.ball.x+=state.vel.x; state.ball.y+=state.vel.y;
 
-  // Walls
-  if (state.ball.x < 12)  { state.ball.x = 12;  state.vel.x *= -0.5; }
-  if (state.ball.x > W-12){ state.ball.x = W-12; state.vel.x *= -0.5; }
-  if (state.ball.y < 12)  { state.ball.y = 12;   state.vel.y *= -0.5; }
-  if (state.ball.y > H-12){ state.ball.y = H-12;  state.vel.y *= -0.5; }
+  if(state.ball.x<12)   {state.ball.x=12;   state.vel.x=Math.abs(state.vel.x)*0.2;}
+  if(state.ball.x>W-12) {state.ball.x=W-12; state.vel.x=-Math.abs(state.vel.x)*0.2;}
+  if(state.ball.y<12)   {state.ball.y=12;   state.vel.y=Math.abs(state.vel.y)*0.2;}
+  if(state.ball.y>H-12) {state.ball.y=H-12; state.vel.y=-Math.abs(state.vel.y)*0.2;}
 
-  const speed = Math.sqrt(state.vel.x**2 + state.vel.y**2);
+  const speed=Math.sqrt(state.vel.x**2+state.vel.y**2);
+  const dcx=state.ball.x-state.cup.x, dcy=state.ball.y-state.cup.y;
+  if(Math.sqrt(dcx*dcx+dcy*dcy)<13 && speed<5) { holeMade(); return; }
 
-  // Cup check
-  const dcx = state.ball.x - state.cup.x;
-  const dcy = state.ball.y - state.cup.y;
-  const distCup = Math.sqrt(dcx*dcx + dcy*dcy);
-  if (distCup < 14 && speed < 4.5) {
-    holeMade();
-    return;
+  if(speed<0.10) {
+    state.rolling=false;
+    setMsg('Missed — drag to aim and try again.');
+    draw(); return;
   }
-
-  if (speed < 0.08) {
-    state.rolling = false;
-    setMsg('Missed — click to re-aim and putt again.');
-    draw();
-    return;
-  }
-
   draw();
-  animFrame = requestAnimationFrame(physicsLoop);
+  animFrame=requestAnimationFrame(physicsLoop);
 }
 
 function holeMade() {
-  state.rolling = false;
-  state.made++;
-  state.score += scoreFor(state.putts + 1);
-  state.putts = 0;
-  state.holeComplete = true;
-  state.ball = { x: state.cup.x, y: state.cup.y };
-  state.vel = { x:0, y:0 };
-  state.trail = [];
-
-  const msgs = ['Hole out! 🎉', 'It\'s in! ⛳', 'Nailed it! 🏆', 'Beauty! 👏', 'Get in! 🎊'];
-  setMsg(msgs[Math.floor(Math.random()*msgs.length)] + ' — Click "Next Hole"');
-  updateUI();
-  draw();
+  state.rolling=false; state.made++; state.score+=scoreFor(state.putts);
+  state.holeComplete=true;
+  state.ball={x:state.cup.x,y:state.cup.y};
+  state.vel={x:0,y:0}; state.trail=[];
+  const msgs=['Hole out! 🎉',"It's in! ⛳",'Nailed it! 🏆','Beauty! 👏','Get in! 🎊'];
+  setMsg(msgs[Math.floor(Math.random()*msgs.length)]+' — Click "Next Hole"');
+  updateUI(); draw();
 }
 
-function scoreFor(putts) {
-  if (putts === 1) return 3;
-  if (putts === 2) return 2;
-  if (putts === 3) return 1;
-  return 0;
+function scoreFor(p){return p===1?3:p===2?2:p===3?1:0;}
+
+// ── CLICK TO AIM ────────────────────────────────────────────────
+canvas.addEventListener('click', (e) => {
+  if(state.rolling || state.holeComplete) return;
+  const rect=canvas.getBoundingClientRect(), scl=W/rect.width;
+  state.aimX=(e.clientX-rect.left)*scl;
+  state.aimY=(e.clientY-rect.top)*scl;
+  state.aimed=true;
+  draw();
+});
+
+// ── UI HELPERS ──────────────────────────────────────────────────
+function syncPower() {
+  const val=document.getElementById('power-slider').value;
+  document.getElementById('power-val').textContent=val+'%';
+  document.getElementById('power-bar-inner').style.width=val+'%';
 }
 
 function putt() {
-  if (state.rolling || state.holeComplete) return;
-  if (!state.aimed) { setMsg('Click on the green first to aim!'); return; }
-
-  const power = parseInt(document.getElementById('power-slider').value);
-  const dx = state.aimX - state.ball.x;
-  const dy = state.aimY - state.ball.y;
-  const dist = Math.sqrt(dx*dx + dy*dy) || 1;
-  const speed = power * 0.135;
-
-  state.vel.x = (dx / dist) * speed;
-  state.vel.y = (dy / dist) * speed;
-  state.rolling = true;
-  state.putts++;
-  state.trail = [];
-  updateUI();
-  animFrame = requestAnimationFrame(physicsLoop);
+  if(state.rolling||state.holeComplete) return;
+  if(!state.aimed){setMsg('Click the green first to aim!');return;}
+  const power=parseInt(document.getElementById('power-slider').value);
+  const dx=state.aimX-state.ball.x, dy=state.aimY-state.ball.y;
+  const dist=Math.sqrt(dx*dx+dy*dy)||1;
+  const speed=power*0.10;
+  state.vel.x=(dx/dist)*speed; state.vel.y=(dy/dist)*speed;
+  state.rolling=true; state.putts++; state.trail=[];
+  updateUI(); cancelAnimationFrame(animFrame);
+  animFrame=requestAnimationFrame(physicsLoop);
 }
 
 function nextHole() {
-  if (!state.holeComplete) {
-    setMsg('Finish the current hole first!');
-    return;
-  }
-  state.hole++;
-  initHole();
+  if(!state.holeComplete){setMsg('Finish the current hole first!');return;}
+  state.hole++; initHole();
 }
-
 function resetGame() {
   cancelAnimationFrame(animFrame);
-  state.hole = 1;
-  state.putts = 0;
-  state.made = 0;
-  state.score = 0;
-  initHole();
+  state.hole=1;state.putts=0;state.made=0;state.score=0; initHole();
+}
+function setMsg(m){document.getElementById('message-box').textContent=m;}
+function updateUI(){
+  document.getElementById('sc-hole').textContent=state.hole;
+  document.getElementById('sc-putts').textContent=state.putts;
+  document.getElementById('sc-made').textContent=state.made;
+  document.getElementById('sc-score').textContent=state.score;
 }
 
-function setMsg(m) {
-  document.getElementById('message-box').textContent = m;
-  state.message = m;
-}
-
-function updateUI() {
-  document.getElementById('sc-hole').textContent  = state.hole;
-  document.getElementById('sc-putts').textContent = state.putts;
-  document.getElementById('sc-made').textContent  = state.made;
-  document.getElementById('sc-score').textContent = state.score;
-}
-
-function syncPower() {
-  const val = document.getElementById('power-slider').value;
-  document.getElementById('power-val').textContent = val + '%';
-  document.getElementById('power-bar-inner').style.width = val + '%';
-}
-
-// Canvas click for aiming
-canvas.addEventListener('click', (e) => {
-  if (state.rolling || state.holeComplete) return;
-  const rect = canvas.getBoundingClientRect();
-  const scl = W / rect.width;
-  state.aimX = (e.clientX - rect.left) * scl;
-  state.aimY = (e.clientY - rect.top) * scl;
-  state.aimed = true;
-  draw();
-});
-
-canvas.addEventListener('mousemove', (e) => {
-  if (state.rolling) return;
-  const aim = document.getElementById('aim-indicator');
-  const rect = canvas.getBoundingClientRect();
-  aim.style.display = 'block';
-  aim.style.left = (e.clientX - rect.left) + 'px';
-  aim.style.top  = (e.clientY - rect.top) + 'px';
-});
-
-canvas.addEventListener('mouseleave', () => {
-  document.getElementById('aim-indicator').style.display = 'none';
-});
-
-// Init
 syncPower();
 initHole();
 </script>
-
 </body>
 </html>
